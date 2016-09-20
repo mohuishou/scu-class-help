@@ -74,6 +74,12 @@ C:
 			}
 			mlog("教务处登录成功！")
 			continue C
+		case 6:
+			fmt.Println("请输入待选择的课程号：")
+			_, err = fmt.Scanln(&cid)
+			fmt.Println("请输入待选择的课序号：")
+			_, err = fmt.Scanln(&sid)
+			count = 0
 		default:
 			break C
 		}
@@ -117,7 +123,10 @@ func choose(cid, sid string, c *h.Client) (status int, err error) {
 	//抓取提示字符
 	reg := regexp.MustCompile(`<font color="#990000">(.+)</font>`)
 	result := reg.Find(body)
-
+	if result == nil {
+		err := errors.New("课程查询失败，请检查课程号:" + cid + "，课序号:" + sid + ",是否输入正确")
+		return 6, err
+	}
 	//字符编码转换
 	enc := mahonia.NewDecoder("gbk")
 	results := string(result)
